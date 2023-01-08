@@ -1,2 +1,3 @@
-# simple-battle-royale
-A template of a simple battle royale game made with Unity
+# Simple Battle Royale
+
+A template of a simple battle royale game made with Unity 3D
