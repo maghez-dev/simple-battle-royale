@@ -14,7 +14,7 @@ public class GenerateEnemies : MonoBehaviour
 
     IEnumerator CreateEnemies()
     {
-        int numberOfEnemies = 10;
+        int numberOfEnemies = 20;
         var yPosition = 0.5f;
 
         while (enemiesCreated < numberOfEnemies)

@@ -1,7 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Animations;
+using UnityEngine.SceneManagement;
+
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -25,6 +24,11 @@ public class PlayerMovement : MonoBehaviour
         MovePlayer();
 
         Look();
+
+        if (transform.position.y < -2)
+        {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        }
     }
 
     void MovePlayer()
