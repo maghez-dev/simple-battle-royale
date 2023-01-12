@@ -4,32 +4,35 @@ using UnityEngine;
 
 public class GenerateEnemies : MonoBehaviour
 {
-    public GameObject enemyPrefab;
+    public GameObject theEnemy;
+
     public int enemiesCreated;
 
+    // Start is called before the first frame update
     void Start()
     {
         StartCoroutine(CreateEnemies());
     }
 
-    IEnumerator CreateEnemies()
-    {
-        int numberOfEnemies = 10;
-        var yPosition = 0.5f;
+    IEnumerator CreateEnemies() {
+        int numberOfEnemies = 20;
+        float yPosition = 0.4f;
 
-        while (enemiesCreated < numberOfEnemies)
-        {
+        while (enemiesCreated < numberOfEnemies) {
+
             var xPosition = Random.Range(-25, 25);
-            var zPosition = Random.Range(-25, 25);
-            
-            Instantiate(enemyPrefab, new Vector3(xPosition, yPosition, zPosition), Quaternion.identity);
-            
-            enemiesCreated++;
+            var zPosition = Random.Range(-25, 25); 
+
+            Instantiate(theEnemy, new Vector3(xPosition, yPosition, zPosition), Quaternion.identity);
 
             yield return new WaitForSeconds(0.1f);
+
+            enemiesCreated += 1;
+
         }
     }
 
+    // Update is called once per frame
     void Update()
     {
         
