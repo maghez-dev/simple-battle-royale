@@ -2,49 +2,77 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Animations;
+using UnityEngine.UIElements;
 
 public class PlayerMovement : MonoBehaviour
 {
-    public Transform cameraTransform;
-    
-    CharacterController characterController;
-    float speed = 3f;
-    float sensitivity = 1f;
+    [Header("XZ Movement")]
+    public float speed = 10f;
 
-    float pitch = 0f;
-    float minPitch = -45f;
-    float maxPitch = 45f;
+    [Header("Jump")]
+    public float jumpForce = 5f;
+
+    [Header("Look Around")]
+    public float sensitivity = 1f;
+    public float lerp = 1f;
+    [Range(0, 90)] public int maxAngle = 70;
+    [Range(-90, 0)] public int minAngle = -70;
+
+    private Rigidbody rb;
+    private float rotatedX = 0f;
+    private float rotatedY = 0f;
+
 
     void Start()
     {
-        characterController = GetComponent<CharacterController>();
+        rb = GetComponent<Rigidbody>();    
     }
 
     void Update()
     {
-        MovePlayer();
+        Jump();
 
-        Look();
+        LookAround();
     }
 
-    void MovePlayer()
+    private void FixedUpdate()
     {
-        Vector3 move = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
-        move = Vector3.ClampMagnitude(move, 1f);
-        move = transform.TransformDirection(move);
-
-        characterController.SimpleMove(move * speed);
+        Movement();
     }
 
-    private void Look()
+    private void Jump()
     {
-        float mouseX = Input.GetAxis("Mouse X") * sensitivity;
+        if (Input.GetButtonDown("Jump"))
+        {
+            rb.AddForce(new Vector3(0, jumpForce, 0), ForceMode.Impulse);
+        }
+    }
 
-        transform.Rotate(0, mouseX, 0);
+    private void LookAround()
+    {
+        float rotX = Input.GetAxis("Mouse X") * sensitivity * Time.deltaTime;
+        float rotY = Input.GetAxis("Mouse Y") * sensitivity * Time.deltaTime;
+        rotatedX += rotX;
+        rotatedY -= rotY;
+        rotatedX %= 360;
+        rotatedY %= 360;
 
-        pitch -= Input.GetAxis("Mouse Y") * sensitivity;
-        pitch = Mathf.Clamp(pitch, minPitch, maxPitch);
+        if (rotatedY > maxAngle)
+            rotatedY = maxAngle;
+        if (rotatedY < minAngle)
+            rotatedY = minAngle;
 
-        cameraTransform.localRotation = Quaternion.Euler(pitch, 0, 0);
+        Quaternion targetRotation = Quaternion.Euler(rotatedY, rotatedX, 0f);
+        transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, lerp * Time.deltaTime);
+    }
+
+    private void Movement()
+    {
+        Vector3 horizontal = transform.right * Input.GetAxis("Horizontal");
+        Vector3 forward = transform.forward * Input.GetAxis("Vertical");
+
+        Vector3 xzVelocity = (horizontal + forward).normalized * speed * Time.fixedDeltaTime;
+
+        rb.velocity = new Vector3(xzVelocity.x, rb.velocity.y, xzVelocity.z);
     }
 }
