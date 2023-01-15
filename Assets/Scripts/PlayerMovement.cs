@@ -1,67 +1,79 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
+using UnityEngine.Animations;
+using UnityEngine.UIElements;
 
 public class PlayerMovement : MonoBehaviour
 {
-    CharacterController CharacterControllerPlayer;
+    [Header("XZ Movement")]
+    public float speed = 10f;
 
-    float Speed = 3f;
+    [Header("Jump")]
+    public float jumpForce = 5f;
 
-    float pitch = 0f;
+    [Header("Look Around")]
+    public float sensitivity = 1f;
+    public float lerp = 1f;
+    [Range(0, 90)] public int maxAngle = 70;
+    [Range(-90, 0)] public int minAngle = -70;
 
-    public Transform cameraTransform;
+    private Rigidbody rb;
+    private float rotatedX = 0f;
+    private float rotatedY = 0f;
 
-    // Start is called before the first frame update
+
     void Start()
     {
-        CharacterControllerPlayer = GetComponent<CharacterController>();
+        rb = GetComponent<Rigidbody>();    
     }
 
     // Update is called once per frame
     void Update()
     {
-        MovePlayer();
+        Jump();
 
-        Look();
+        LookAround();
+    }
 
-        if (this.transform.position.y < -2) {
+    private void FixedUpdate()
+    {
+        Movement();
+    }
 
-            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-
+    private void Jump()
+    {
+        if (Input.GetButtonDown("Jump"))
+        {
+            rb.AddForce(new Vector3(0, jumpForce, 0), ForceMode.Impulse);
         }
     }
 
-    void MovePlayer() {
+    private void LookAround()
+    {
+        float rotX = Input.GetAxis("Mouse X") * sensitivity * Time.deltaTime;
+        float rotY = Input.GetAxis("Mouse Y") * sensitivity * Time.deltaTime;
+        rotatedX += rotX;
+        rotatedY -= rotY;
+        rotatedX %= 360;
+        rotatedY %= 360;
 
-        Vector3 move = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
+        if (rotatedY > maxAngle)
+            rotatedY = maxAngle;
+        if (rotatedY < minAngle)
+            rotatedY = minAngle;
 
-        move = Vector3.ClampMagnitude(move, 1f);
-
-        move = transform.TransformDirection(move);
-
-        CharacterControllerPlayer.SimpleMove(move * Speed);
-
+        Quaternion targetRotation = Quaternion.Euler(rotatedY, rotatedX, 0f);
+        transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, lerp * Time.deltaTime);
     }
 
-    float Sensitivity = 3f;
+    private void Movement()
+    {
+        Vector3 horizontal = transform.right * Input.GetAxis("Horizontal");
+        Vector3 forward = transform.forward * Input.GetAxis("Vertical");
 
-    float MinPitch = -45f;
+        Vector3 xzVelocity = (horizontal + forward).normalized * speed * Time.fixedDeltaTime;
 
-    float MaxPitch = 45f;
-
-    void Look() {
-
-        float mouseX = Input.GetAxis("Mouse X") * Sensitivity;
-
-        transform.Rotate(0, mouseX, 0);
-
-        pitch -= Input.GetAxis("Mouse Y") * Sensitivity;
-
-        pitch = Mathf.Clamp(pitch, MinPitch, MaxPitch);
-
-        cameraTransform.localRotation = Quaternion.Euler(pitch, 0, 0);
-
+        rb.velocity = new Vector3(xzVelocity.x, rb.velocity.y, xzVelocity.z);
     }
 }
