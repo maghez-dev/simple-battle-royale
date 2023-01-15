@@ -1,10 +1,8 @@
-using System.Collections;
-using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
-using UnityEngine.Animations;
-using UnityEngine.UIElements;
 
-public class PlayerMovement : MonoBehaviour
+
+public class PlayerMovement : NetworkBehaviour
 {
     [Header("XZ Movement")]
     public float speed = 10f;
@@ -17,6 +15,7 @@ public class PlayerMovement : MonoBehaviour
     public float lerp = 1f;
     [Range(0, 90)] public int maxAngle = 70;
     [Range(-90, 0)] public int minAngle = -70;
+    public GameObject playerCamera;
 
     private Rigidbody rb;
     private float rotatedX = 0f;
@@ -25,11 +24,16 @@ public class PlayerMovement : MonoBehaviour
 
     void Start()
     {
+        if (IsOwner)
+            playerCamera.SetActive(true);
+
         rb = GetComponent<Rigidbody>();    
     }
 
     void Update()
     {
+        if (!IsOwner) return;
+
         Jump();
 
         LookAround();
@@ -37,6 +41,8 @@ public class PlayerMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
+        if (!IsOwner) return;
+
         Movement();
     }
 
