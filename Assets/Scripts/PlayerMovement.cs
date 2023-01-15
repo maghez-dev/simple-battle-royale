@@ -1,11 +1,8 @@
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
-<<<<<<< HEAD
 using UnityEngine.Animations;
 using UnityEngine.UIElements;
-=======
-using UnityEngine.SceneManagement;
-
->>>>>>> 04bcabaa3e413c9b65ff24846cae0935ea926d28
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -31,21 +28,11 @@ public class PlayerMovement : MonoBehaviour
         rb = GetComponent<Rigidbody>();    
     }
 
-    // Update is called once per frame
     void Update()
     {
         Jump();
 
-<<<<<<< HEAD
         LookAround();
-=======
-        Look();
-
-        if (transform.position.y < -2)
-        {
-            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-        }
->>>>>>> 04bcabaa3e413c9b65ff24846cae0935ea926d28
     }
 
     private void FixedUpdate()

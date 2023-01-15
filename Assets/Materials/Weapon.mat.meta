@@ -1,11 +1,6 @@
 fileFormatVersion: 2
-<<<<<<< HEAD:Assets/Prefabs/Player.prefab.meta
-guid: b19ee97fc1fb04747997f7cb5e684d58
-PrefabImporter:
-=======
 guid: 7c1ca7091816393408619f8e3b59df33
 NativeFormatImporter:
->>>>>>> tmp:Assets/Materials/Weapon.mat.meta
   externalObjects: {}
   mainObjectFileID: 2100000
   userData: 

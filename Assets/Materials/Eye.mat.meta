@@ -1,11 +1,6 @@
 fileFormatVersion: 2
-<<<<<<< HEAD:Assets/Prefabs/Enemy.prefab.meta
-guid: 0b29dd06bda3d4600b4dad947d17a654
-PrefabImporter:
-=======
 guid: 2fda5745b8664da4fb1345870039d75e
 NativeFormatImporter:
->>>>>>> tmp:Assets/Materials/Eye.mat.meta
   externalObjects: {}
   mainObjectFileID: 2100000
   userData: 
